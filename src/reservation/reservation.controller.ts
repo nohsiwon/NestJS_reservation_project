@@ -26,13 +26,11 @@ export class ReservationController {
     return this.reservationService.findAll(+user.user_id);
   }
 
-  @Get(':showId')
-  findOne(@UserInfo() user: User, @Param('showId') showId: number) {
-    return this.reservationService.findOne(+user.user_id, +showId);
-  }
-
-  @Delete(':showId')
-  remove(@UserInfo() user: User, @Param('showId') showId: number) {
-    return this.reservationService.remove(+user.user_id, +showId);
+  @Delete(':reservationId')
+  remove(
+    @UserInfo() user: User,
+    @Param('reservationId') reservationId: number,
+  ) {
+    return this.reservationService.remove(+reservationId);
   }
 }

@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
 import {
-  Check,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -37,11 +36,11 @@ export class Show {
   @IsNumber()
   @IsNotEmpty({ message: '가격을 작성해주세요' })
   @Column('int', { nullable: false })
-  @Check(`"point" >= 0 AND "point" <= 50000`) // 최대값은 1000으로 설정
   point: number;
 
   @IsString()
   @IsNotEmpty({ message: '공연 장소를 작성해주세요' })
+  @Column('varchar', { nullable: false })
   show_shop: string;
 
   @IsString()
@@ -57,7 +56,7 @@ export class Show {
   @Column({
     type: 'enum',
     enum: ShowCategory,
-    nullable: true,
+    default: ShowCategory.other,
   })
   show_category: ShowCategory;
 

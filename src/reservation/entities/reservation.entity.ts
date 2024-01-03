@@ -1,12 +1,14 @@
-import { IsNotEmpty, IsString } from 'class-validator';
 import { Show } from 'src/show/entities/show.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -15,13 +17,6 @@ import {
 export class Reservation {
   @PrimaryGeneratedColumn()
   reservation_id: number;
-
-  @IsString()
-  @IsNotEmpty({ message: '예약일, 예약 시간을 작성해주세요' })
-  @Column('varchar', {
-    nullable: false,
-  })
-  show_date: string;
 
   @ManyToOne(() => User, (user) => user.reservation)
   @JoinColumn({ name: 'user_id' })
@@ -38,4 +33,13 @@ export class Reservation {
 
   @Column({ type: 'bigint', name: 'show_id' })
   show_id: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

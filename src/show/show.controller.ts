@@ -31,6 +31,11 @@ export class ShowController {
     return this.showService.findAll();
   }
 
+  @Get('/search')
+  findByTitle(@Body('title') title: string) {
+    return this.showService.findByTitle(title);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.showService.findOne(+id);

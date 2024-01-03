@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserType } from '../types/userType.type';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
 
 @Entity({
@@ -31,8 +32,8 @@ export class User {
   @Column('int', { nullable: false, default: 1000000 })
   point: number;
 
-  @Column('boolean', { default: false })
-  user_type: boolean;
+  @Column('enum', { enum: UserType, default: UserType.User })
+  user_type: UserType;
 
   @OneToMany(() => Reservation, (reservation) => reservation.user)
   reservation: Reservation[];

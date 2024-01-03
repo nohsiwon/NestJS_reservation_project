@@ -45,18 +45,18 @@ export class ReservationService {
       throw new BadRequestException('보유 포인트가 부족합니다');
     }
 
-    await this.userRepository.update(
-      { user_id: userId },
-      { point: user.point - show.point },
-    );
-
     const existReservation = await this.reservationRepository.findOne({
       where: { show_id: showId },
     });
 
-    if (_.isNil(existReservation)) {
+    if (!_.isNil(existReservation)) {
       throw new ConflictException('이미 예약된 공연입니다');
     }
+
+    await this.userRepository.update(
+      { user_id: userId },
+      { point: user.point - show.point },
+    );
 
     await this.reservationRepository.save({
       user_id: userId,
@@ -68,30 +68,22 @@ export class ReservationService {
       { seat: show.seat - 1 },
     );
     return {
-      message: `${show.show_date[1]}시에 ${show.show_shop}에서 하는 ${show.title}를 ${show.point}로 예약하셨습니다`,
+      message: `${show.show_date}에 ${show.show_shop}에서 하는 ${show.title}를 ${show.point}포인트로 예약하셨습니다`,
     };
   }
 
   async findAll(userId: number) {
     return await this.reservationRepository.find({
       where: { user_id: userId },
+      order: {
+        createdAt: 'ASC',
+      },
     });
   }
 
-  async findOne(userId: number, showId: number) {
+  async remove(reservationId: number) {
     const findReservation = await this.reservationRepository.findOne({
-      where: { user_id: userId, show_id: showId },
-    });
-
-    if (_.isNil(findReservation)) {
-      throw new NotFoundException('잘못된 공연번호입니다');
-    }
-    return findReservation;
-  }
-
-  async remove(userId: number, showId: number) {
-    const findReservation = await this.reservationRepository.findOne({
-      where: { user_id: userId, show_id: showId },
+      where: { reservation_id: reservationId },
     });
 
     if (_.isNil(findReservation)) {
@@ -99,21 +91,20 @@ export class ReservationService {
     }
 
     await this.reservationRepository.softDelete({
-      user_id: userId,
-      show_id: showId,
+      reservation_id: reservationId,
     });
 
     const userPoint = await this.userRepository.findOne({
-      where: { user_id: userId },
+      where: { user_id: findReservation.user_id },
       select: ['point'],
     });
     const showPoint = await this.showRepository.findOne({
-      where: { show_id: showId },
+      where: { show_id: findReservation.show_id },
       select: ['point'],
     });
 
     await this.userRepository.update(
-      { user_id: userId },
+      { user_id: findReservation.user_id },
       { point: userPoint.point + showPoint.point },
     );
 

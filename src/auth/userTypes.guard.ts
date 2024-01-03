@@ -24,6 +24,7 @@ export class UserTypeGuard extends AuthGuard('jwt') implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    return requiredTypes.some((type) => user.type === type);
+
+    return requiredTypes.some((type) => user.user_type === type);
   }
 }

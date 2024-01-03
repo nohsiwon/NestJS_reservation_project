@@ -10,5 +10,5 @@ export class CreateShowDto extends PickType(Show, [
   'show_shop',
   'show_date',
   'show_image',
-  // 'show_category',
+  'show_category',
 ] as const) {}

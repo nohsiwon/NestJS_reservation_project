@@ -8,7 +8,7 @@ import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Show } from './entities/show.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import _ from 'lodash';
 
 @Injectable()
@@ -26,14 +26,28 @@ export class ShowService {
       throw new ConflictException('이미 존재하는 상영입니다');
     }
 
+    if (createShowDto.point < 0 || createShowDto.point > 50000) {
+      throw new BadRequestException('가격이 알맞지 않습니다');
+    }
+
     await this.showRepository.save(createShowDto);
-    return `${createShowDto} 공연을 성공적으로 추가하였습니다`;
+    return {
+      createShowDto,
+    };
   }
 
   async findAll() {
     return await this.showRepository.find({
       where: { deletedAt: null },
-      select: ['show_id', 'title', 'seat', 'point', 'show_date', 'updatedAt'],
+      select: [
+        'show_id',
+        'title',
+        'seat',
+        'point',
+        'show_shop',
+        'show_date',
+        'updatedAt',
+      ],
     });
   }
 
@@ -49,6 +63,7 @@ export class ShowService {
         'description',
         'seat',
         'point',
+        'show_shop',
         'show_date',
         'updatedAt',
       ],
@@ -62,11 +77,12 @@ export class ShowService {
   }
 
   async findByTitle(title: string) {
-    const searchResults = await this.showRepository.find({
-      where: {
-        deletedAt: null,
-        title: Like(`%${title}%`), // title에 특정 문자열을 포함하는 경우
-      },
+    const allShow = await this.showRepository.find({
+      where: { deletedAt: null },
+    });
+
+    const searchResults = allShow.filter((show) => {
+      return show.title.includes(title);
     });
 
     return searchResults;
@@ -84,7 +100,7 @@ export class ShowService {
       show_shop,
       show_date,
       show_image,
-      // show_category,
+      show_category,
     } = updateShowDto;
 
     const show = await this.showRepository.findOne({
@@ -104,7 +120,7 @@ export class ShowService {
         show_shop,
         show_date,
         show_image,
-        // show_category,
+        show_category,
       },
     );
 
@@ -124,6 +140,8 @@ export class ShowService {
       throw new NotFoundException('공연을 찾을 수 없습니다');
     }
 
-    return this.showRepository.softDelete({ show_id: id });
+    this.showRepository.softDelete({ show_id: id });
+
+    return `공연 정보가 삭제되었습니다`;
   }
 }
