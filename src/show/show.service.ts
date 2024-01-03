@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,7 +18,25 @@ export class ShowService {
   ) {}
 
   async create(createShowDto: CreateShowDto) {
-    return (await this.showRepository.save(createShowDto)).showId;
+    const existShow = await this.showRepository.findOne({
+      where: { title: createShowDto.title },
+    });
+
+    const hasDuplicate = createShowDto.show_date.some((date) =>
+      existShow.show_date.includes(date),
+    );
+
+    if (hasDuplicate) {
+      throw new ConflictException('이미 존재하는 상영입니다');
+    }
+
+    if (!_.isNil(existShow)) {
+      existShow.show_date.push(...createShowDto.show_date);
+      return { message: '공연이 이미 존재하여 날짜를 추가하였습니다' };
+    }
+
+    await this.showRepository.save(createShowDto);
+    return `${createShowDto} 공연을 성공적으로 추가하였습니다`;
   }
 
   async findAll() {
@@ -53,16 +72,11 @@ export class ShowService {
     const { title, description, point, show_date } = updateShowDto;
 
     const show = await this.showRepository.findOne({
-      select: ['seat'],
       where: { showId: id },
     });
 
     if (_.isNil(show)) {
       throw new NotFoundException('공연을 찾을 수 없습니다');
-    }
-
-    if (show.seat === 0) {
-      throw new BadRequestException('남은 좌석이 없습니다');
     }
 
     await this.showRepository.update(

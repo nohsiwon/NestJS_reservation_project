@@ -3,9 +3,9 @@ import { PickType } from '@nestjs/mapped-types';
 import { Show } from '../entities/show.entity';
 
 export class CreateShowDto extends PickType(Show, [
-  'showId',
   'title',
   'description',
+  'seat',
   'point',
   'show_date',
 ] as const) {}

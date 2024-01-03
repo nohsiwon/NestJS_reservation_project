@@ -7,7 +7,11 @@ import { UserModule } from './user/user.module';
 import { ShowModule } from './show/show.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from './user/entities/user.entity';
+import { Show } from './show/entities/show.entity';
+import { Reservation } from './reservation/entities/reservation.entity';
+import { AuthModule } from './auth/auth.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -40,9 +44,10 @@ const typeOrmModuleOptions = {
       }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-    UserModule,
+    AuthModule,
     ShowModule,
     ReservationModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
