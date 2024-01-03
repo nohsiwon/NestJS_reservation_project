@@ -1,12 +1,12 @@
 ### 환경변수
 
-DB_HOST=
-DB_PORT=
-DB_USERNAME=
-DB_PASSWORD=
-DB_NAME=
-DB_SYNC=true
-JWT_SECRET_KEY=
+- DB_HOST=
+- DB_PORT=
+- DB_USERNAME=
+- DB_PASSWORD=
+- DB_NAME=
+- DB_SYNC=true
+- JWT_SECRET_KEY=
 
 ### 실행 방법
 ```
