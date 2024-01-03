@@ -1,8 +1,6 @@
 import Joi from 'joi';
 
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { ShowModule } from './show/show.module';
 import { ReservationModule } from './reservation/reservation.module';
@@ -45,11 +43,11 @@ const typeOrmModuleOptions = {
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,
-    ShowModule,
     ReservationModule,
     UserModule,
+    ShowModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

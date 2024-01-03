@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { ReservationService } from './reservation.service';
-import { CreateReservationDto } from './dto/create-reservation.dto';
-import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from 'src/utils/userInfo.decorator';
+import { User } from 'src/user/entities/user.entity';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
-  @Post()
-  create(@Body() createReservationDto: CreateReservationDto) {
-    return this.reservationService.create(createReservationDto);
+  @Post(':showId')
+  async reserve(@UserInfo() user: User, @Param('showId') showId: number) {
+    return this.reservationService.reserve(+user.user_id, +showId);
   }
 
   @Get()
-  findAll() {
-    return this.reservationService.findAll();
+  findAll(@UserInfo() user: User) {
+    return this.reservationService.findAll(+user.user_id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationService.findOne(+id);
+  @Get(':showId')
+  findOne(@UserInfo() user: User, @Param('showId') showId: number) {
+    return this.reservationService.findOne(+user.user_id, +showId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
-    return this.reservationService.update(+id, updateReservationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reservationService.remove(+id);
+  @Delete(':showId')
+  remove(@UserInfo() user: User, @Param('showId') showId: number) {
+    return this.reservationService.remove(+user.user_id, +showId);
   }
 }

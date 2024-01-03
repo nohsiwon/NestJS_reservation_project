@@ -14,6 +14,7 @@ export class UserController {
     return await this.userService.signUp(
       signInUserDTO.email,
       signInUserDTO.password,
+      signInUserDTO.user_type,
     );
   }
 
@@ -26,8 +27,8 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/email')
+  @Get('/myInfo')
   getEmail(@UserInfo() user: User) {
-    return { email: user.email };
+    return { email: user.email, point: user.point };
   }
 }
