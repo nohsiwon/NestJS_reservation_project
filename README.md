@@ -8,6 +8,10 @@
 - DB_SYNC=true
 - JWT_SECRET_KEY=
 
+### 유저 타입
+- 회원가입 시 `"user_type":"Admin"`으로 관리자
+- 기본값 = `User`
+
 ### 실행 방법
 ```
 npm install
