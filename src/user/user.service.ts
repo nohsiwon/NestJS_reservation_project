@@ -19,10 +19,8 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(email: string, password: string, user_type: UserType) {
+  async signUp(email: string, password: string, userType: UserType) {
     const existUser = await this.findOne(email);
-
-    console.log(user_type);
 
     if (!_.isNil(existUser)) {
       throw new ConflictException('이미 가입된 아이디입니다');
@@ -33,7 +31,7 @@ export class UserService {
     await this.userRepository.save({
       email,
       password: hashedPassword,
-      user_type,
+      userType,
     });
 
     return `회원 가입 완료`;
@@ -42,7 +40,7 @@ export class UserService {
   async signIn(email: string, password: string) {
     const user = await this.userRepository.findOne({
       where: { email, deletedAt: null },
-      select: ['user_id', 'email', 'password'],
+      select: ['userId', 'email', 'password'],
     });
 
     if (_.isNil(user)) {
@@ -53,7 +51,7 @@ export class UserService {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
 
-    const payload = { user_id: user.user_id, email };
+    const payload = { userId: user.userId, email };
 
     const accessToken = await this.jwtService.signAsync(payload);
     return accessToken;

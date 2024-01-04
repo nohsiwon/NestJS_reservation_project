@@ -40,12 +40,12 @@ export class ShowService {
     return await this.showRepository.find({
       where: { deletedAt: null },
       select: [
-        'show_id',
+        'showId',
         'title',
         'seat',
         'point',
-        'show_shop',
-        'show_date',
+        'showShop',
+        'showDate',
         'updatedAt',
       ],
     });
@@ -57,14 +57,14 @@ export class ShowService {
     }
 
     const findOneShow = await this.showRepository.findOne({
-      where: { show_id: id, deletedAt: null },
+      where: { showId: id, deletedAt: null },
       select: [
         'title',
         'description',
         'seat',
         'point',
-        'show_shop',
-        'show_date',
+        'showShop',
+        'showDate',
         'updatedAt',
       ],
     });
@@ -97,14 +97,14 @@ export class ShowService {
       title,
       description,
       point,
-      show_shop,
-      show_date,
-      show_image,
-      show_category,
+      showShop,
+      showDate,
+      showImage,
+      showCategory,
     } = updateShowDto;
 
     const show = await this.showRepository.findOne({
-      where: { show_id: id },
+      where: { showId: id },
     });
 
     if (_.isNil(show)) {
@@ -112,15 +112,15 @@ export class ShowService {
     }
 
     await this.showRepository.update(
-      { show_id: id },
+      { showId: id },
       {
         title,
         description,
         point,
-        show_shop,
-        show_date,
-        show_image,
-        show_category,
+        showShop,
+        showDate,
+        showImage,
+        showCategory,
       },
     );
 
@@ -133,14 +133,14 @@ export class ShowService {
     }
 
     const show = await this.showRepository.findOne({
-      where: { show_id: id },
+      where: { showId: id },
     });
 
     if (_.isNil(show)) {
       throw new NotFoundException('공연을 찾을 수 없습니다');
     }
 
-    this.showRepository.softDelete({ show_id: id });
+    this.showRepository.softDelete({ showId: id });
 
     return `공연 정보가 삭제되었습니다`;
   }

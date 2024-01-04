@@ -10,11 +10,13 @@ import { User } from './user/entities/user.entity';
 import { Show } from './show/entities/show.entity';
 import { Reservation } from './reservation/entities/reservation.entity';
 import { AuthModule } from './auth/auth.module';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 const typeOrmModuleOptions = {
   useFactory: async (
     configService: ConfigService,
   ): Promise<TypeOrmModuleOptions> => ({
+    namingStrategy: new SnakeNamingStrategy(),
     type: 'mysql',
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),

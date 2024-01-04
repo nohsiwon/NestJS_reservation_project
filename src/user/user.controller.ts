@@ -14,7 +14,7 @@ export class UserController {
     return await this.userService.signUp(
       signInUserDTO.email,
       signInUserDTO.password,
-      signInUserDTO.user_type,
+      signInUserDTO.userType,
     );
   }
 

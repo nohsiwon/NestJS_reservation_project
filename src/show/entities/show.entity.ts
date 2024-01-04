@@ -16,7 +16,7 @@ import { ShowCategory } from '../types/showCategory.type';
 })
 export class Show {
   @PrimaryGeneratedColumn()
-  show_id: number;
+  showId: number;
 
   @IsString()
   @IsNotEmpty({ message: '제목을 작성해주세요' })
@@ -41,24 +41,24 @@ export class Show {
   @IsString()
   @IsNotEmpty({ message: '공연 장소를 작성해주세요' })
   @Column('varchar', { nullable: false })
-  show_shop: string;
+  showShop: string;
 
   @IsString()
   @IsNotEmpty({ message: '예약일, 예약 시간을 작성해주세요' })
   @Column('varchar', {
     nullable: false,
   })
-  show_date: string;
+  showDate: string;
 
   @Column('varchar', { nullable: true })
-  show_image: string; // 파일 경로나 이미지 URL을 저장
+  showImage: string; // 파일 경로나 이미지 URL을 저장
 
   @Column({
     type: 'enum',
     enum: ShowCategory,
     default: ShowCategory.other,
   })
-  show_category: ShowCategory;
+  showCategory: ShowCategory;
 
   @OneToMany(() => Reservation, (reservation) => reservation.show)
   reservations: Reservation[];

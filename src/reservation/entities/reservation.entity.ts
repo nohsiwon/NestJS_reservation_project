@@ -16,23 +16,23 @@ import {
 })
 export class Reservation {
   @PrimaryGeneratedColumn()
-  reservation_id: number;
+  reservationId: number;
 
   @ManyToOne(() => User, (user) => user.reservation)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn()
   user: User;
 
-  @Column({ type: 'bigint', name: 'user_id' })
-  user_id: number;
+  @Column({ type: 'bigint' })
+  userId: number;
 
   @ManyToOne(() => Show, (show) => show.reservations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'show_id' })
+  @JoinColumn()
   show: Show;
 
-  @Column({ type: 'bigint', name: 'show_id' })
-  show_id: number;
+  @Column({ type: 'bigint' })
+  showId: number;
 
   @CreateDateColumn()
   createdAt: Date;

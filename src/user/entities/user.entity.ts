@@ -16,7 +16,7 @@ import { Reservation } from 'src/reservation/entities/reservation.entity';
 })
 export class User {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  userId: number;
 
   @IsEmail()
   @IsNotEmpty({ message: '이메일을 입력해주세요' })
@@ -33,7 +33,7 @@ export class User {
   point: number;
 
   @Column('enum', { enum: UserType, default: UserType.User })
-  user_type: UserType;
+  userType: UserType;
 
   @OneToMany(() => Reservation, (reservation) => reservation.user)
   reservation: Reservation[];

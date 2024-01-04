@@ -18,12 +18,12 @@ export class ReservationController {
 
   @Post(':showId')
   async reserve(@UserInfo() user: User, @Param('showId') showId: number) {
-    return this.reservationService.reserve(+user.user_id, +showId);
+    return this.reservationService.reserve(+user.userId, +showId);
   }
 
   @Get()
   findAll(@UserInfo() user: User) {
-    return this.reservationService.findAll(+user.user_id);
+    return this.reservationService.findAll(+user.userId);
   }
 
   @Delete(':reservationId')

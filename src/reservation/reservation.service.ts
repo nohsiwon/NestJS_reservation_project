@@ -24,8 +24,8 @@ export class ReservationService {
 
   async reserve(userId: number, showId: number) {
     const show = await this.showRepository.findOne({
-      where: { show_id: showId },
-      select: ['show_date', 'title', 'show_shop', 'point', 'seat'],
+      where: { showId: showId },
+      select: ['showDate', 'title', 'showShop', 'point', 'seat'],
     });
 
     if (_.isNil(show)) {
@@ -37,7 +37,7 @@ export class ReservationService {
     }
 
     const user = await this.userRepository.findOne({
-      where: { user_id: userId },
+      where: { userId: userId },
       select: ['point'],
     });
 
@@ -46,7 +46,7 @@ export class ReservationService {
     }
 
     const existReservation = await this.reservationRepository.findOne({
-      where: { show_id: showId },
+      where: { showId: showId },
     });
 
     if (!_.isNil(existReservation)) {
@@ -54,27 +54,27 @@ export class ReservationService {
     }
 
     await this.userRepository.update(
-      { user_id: userId },
+      { userId: userId },
       { point: user.point - show.point },
     );
 
     await this.reservationRepository.save({
-      user_id: userId,
-      show_id: showId,
+      userId: userId,
+      showId: showId,
     });
 
     await this.showRepository.update(
-      { show_id: showId },
+      { showId: showId },
       { seat: show.seat - 1 },
     );
     return {
-      message: `${show.show_date}에 ${show.show_shop}에서 하는 ${show.title}를 ${show.point}포인트로 예약하셨습니다`,
+      message: `${show.showDate}에 ${show.showShop}에서 하는 ${show.title}를 ${show.point}포인트로 예약하셨습니다`,
     };
   }
 
   async findAll(userId: number) {
     return await this.reservationRepository.find({
-      where: { user_id: userId },
+      where: { userId: userId },
       order: {
         createdAt: 'ASC',
       },
@@ -83,7 +83,7 @@ export class ReservationService {
 
   async remove(reservationId: number) {
     const findReservation = await this.reservationRepository.findOne({
-      where: { reservation_id: reservationId },
+      where: { reservationId: reservationId },
     });
 
     if (_.isNil(findReservation)) {
@@ -91,20 +91,20 @@ export class ReservationService {
     }
 
     await this.reservationRepository.softDelete({
-      reservation_id: reservationId,
+      reservationId: reservationId,
     });
 
     const userPoint = await this.userRepository.findOne({
-      where: { user_id: findReservation.user_id },
+      where: { userId: findReservation.userId },
       select: ['point'],
     });
     const showPoint = await this.showRepository.findOne({
-      where: { show_id: findReservation.show_id },
+      where: { showId: findReservation.showId },
       select: ['point'],
     });
 
     await this.userRepository.update(
-      { user_id: findReservation.user_id },
+      { userId: findReservation.userId },
       { point: userPoint.point + showPoint.point },
     );
 
